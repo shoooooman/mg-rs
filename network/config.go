@@ -7,20 +7,20 @@ import (
 )
 
 type config struct {
-	Nodes []Node `json:"nodes"`
+	Nodes []Node `mapstructure:"nodes"`
 }
 
 // Node is ...
 type Node struct {
-	ID      int    `json:"id"`
-	Address string `json:"address"`
-	Peers   []Peer `json:"peers"`
+	ID      int    `mapstructure:"id"`
+	Address string `mapstructure:"address"`
+	Peers   []Peer `mapstructure:"peers"`
 }
 
 // Peer is ...
 type Peer struct {
-	ID      int    `json:"id"`
-	Address string `json:"address"`
+	ID      int    `mapstructure:"id"`
+	Address string `mapstructure:"address"`
 }
 
 func readConfig() config {
