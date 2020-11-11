@@ -1,0 +1,30 @@
+{
+    "behaviors": [
+        {
+            "id": 0,
+            "kind": "fixed",
+            "probability": 0.2
+        },
+        {
+            "id": 1,
+            "kind": "fixed",
+            "probability": 0.5
+        },
+        {
+            "id": 2,
+            "kind": "variable",
+            "var_probs": [
+                {
+                    "left": 0,
+                    "right": 10,
+                    "value": 0.1
+                },
+                {
+                    "left": 10,
+                    "right": 20,
+                    "value": 0.9
+                }
+            ]
+        }
+    ]
+}

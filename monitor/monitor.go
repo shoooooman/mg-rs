@@ -1,6 +1,8 @@
 package monitor
 
+import "github.com/shoooooman/mg-rs/common"
+
 // Monitor is ...
 type Monitor interface {
-	MonitorTx(int) bool
+	MonitorTx(common.Tx) bool
 }
