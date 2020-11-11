@@ -51,7 +51,7 @@ func TestMockMonitor_MonitorTx(t *testing.T) {
 	}
 	mock.probs = probs
 
-	txs := []common.Tx{{ID: 0, Party: 0}, {ID: 0, Party: 1}}
+	txs := []common.Tx{{ID: 0, PartyID: 0}, {ID: 0, PartyID: 1}}
 	expected := []bool{true, false}
 	for i, tx := range txs {
 		result := mock.MonitorTx(tx)

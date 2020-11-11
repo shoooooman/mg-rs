@@ -19,8 +19,8 @@ func (sm *TopGateway) GetTxReq(ratings map[int]float64) common.TxReq {
 	}
 
 	req := common.TxReq{
-		ID:    reqID,
-		Party: maxID,
+		ID:      reqID,
+		PartyID: maxID,
 	}
 	reqID++
 	return req

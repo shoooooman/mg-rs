@@ -18,12 +18,12 @@ func TestTopGateway_GetTxReq(t *testing.T) {
 	}
 	expected := []common.TxReq{
 		{
-			ID:    0,
-			Party: 1,
+			ID:      0,
+			PartyID: 1,
 		},
 		{
-			ID:    1,
-			Party: 1,
+			ID:      1,
+			PartyID: 1,
 		},
 	}
 	for i := 0; i < len(expected); i++ {

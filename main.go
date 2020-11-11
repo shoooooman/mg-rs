@@ -33,9 +33,10 @@ func main() {
 	const n = 5
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
-		party := req.Party
+		party := req.PartyID
 		log.Printf("req: %d with %d\n", a.ID, party)
-		behavior := a.MonitorTx(party)
+		tx := common.Tx{ID: req.ID, PartyID: party}
+		behavior := a.MonitorTx(tx)
 		a.UpdateRating(party, behavior)
 		fb := &reputation.Feedback{
 			TargetID: party,

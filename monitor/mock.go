@@ -48,7 +48,7 @@ func readConfig() mockConfig {
 
 // MonitorTx is ...
 func (m *MockMonitor) MonitorTx(tx common.Tx) bool {
-	partyID := tx.Party
+	partyID := tx.PartyID
 	r := rand.Intn(100)
 	val := int(m.probs[partyID] * 100)
 	log.Printf("(r, val)=(%v, %v)\n", r, val)
