@@ -41,7 +41,7 @@ func (m *MockManager) UpdateRating(id int, behavior bool) {
 }
 
 // BroadcastMessage is ...
-func (m *MockManager) BroadcastMessage(msg common.Message) {
+func (m *MockManager) BroadcastMessage(msg *common.Message) {
 	m.Broadcast(msg)
 }
 

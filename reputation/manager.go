@@ -9,7 +9,7 @@ import (
 type Algorithm interface {
 	GetRatings() map[int]float64
 	UpdateRating(int, bool)
-	BroadcastMessage(common.Message)
+	BroadcastMessage(*common.Message)
 	TakeReputation()
 }
 

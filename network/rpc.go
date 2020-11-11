@@ -13,9 +13,9 @@ type RPCServer struct {
 
 // Receive adds the received data to buf
 // The type of the first argument must be the actual received one (cannot be interface{})
-func (rc *RPCServer) Receive(msg common.Message, reply *string) error {
-	log.Println("received:", msg)
-	rc.buf <- &msg
+func (rc *RPCServer) Receive(msg *common.Message, reply *string) error {
+	log.Println("received:", *msg)
+	rc.buf <- msg
 	*reply = "success"
 	return nil
 }

@@ -41,7 +41,7 @@ func main() {
 			TargetID: party,
 			Bp:       &reputation.Bparams{A: 0, B: 1},
 		}
-		msg := common.Message{SenderID: a.ID, Body: fb}
+		msg := &common.Message{SenderID: a.ID, Body: fb}
 		a.BroadcastMessage(msg)
 	}
 	time.Sleep(time.Second * 5)

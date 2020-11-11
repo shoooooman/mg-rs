@@ -44,7 +44,7 @@ func (c *ClientImpl) RunServer(addr string) {
 }
 
 // Broadcast calls Receive methods of all peers
-func (c *ClientImpl) Broadcast(msg common.Message) {
+func (c *ClientImpl) Broadcast(msg *common.Message) {
 	for _, p := range c.peers {
 		var reply string
 		err := p.Call("RPCServer.Receive", msg, &reply)
