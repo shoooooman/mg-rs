@@ -21,7 +21,7 @@ type Agent struct {
 func NewAgent(id int) *Agent {
 	a := &Agent{
 		ID:        id,
-		Gateway:   &market.SortGateway{},
+		Gateway:   &market.TopGateway{},
 		Monitor:   &monitor.MockMonitor{},
 		Manager:   reputation.NewMockManager(id),
 		TxReqs:    make(map[int]common.TxReq),

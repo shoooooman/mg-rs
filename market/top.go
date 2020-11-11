@@ -2,13 +2,13 @@ package market
 
 import "github.com/shoooooman/mg-rs/common"
 
-// SortGateway is ...
-type SortGateway struct{}
+// TopGateway selects a party with the highest rating
+type TopGateway struct{}
 
 var reqID = 0
 
 // GetTxReq is ...
-func (sm *SortGateway) GetTxReq(ratings map[int]float64) common.TxReq {
+func (sm *TopGateway) GetTxReq(ratings map[int]float64) common.TxReq {
 	max := -1.0
 	maxID := -1
 	for id, rating := range ratings {
