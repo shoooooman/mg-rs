@@ -20,7 +20,7 @@ type ClientImpl struct {
 }
 
 // ConnectPeers is ...
-func (c *ClientImpl) ConnectPeers(peerAddrs []string, id int) {
+func (c *ClientImpl) ConnectPeers(peerAddrs []string) {
 	peers := make([]*rpc.Client, len(peerAddrs))
 	for i, addr := range peerAddrs {
 		peer, err := rpc.DialHTTP("tcp", addr)
@@ -74,7 +74,7 @@ func NewClientImpl(id int) *ClientImpl {
 	time.Sleep(time.Second * 5)
 
 	peerAddrs := getPeerAddrs(conf, id)
-	client.ConnectPeers(peerAddrs, id)
+	client.ConnectPeers(peerAddrs)
 
 	return client
 }
