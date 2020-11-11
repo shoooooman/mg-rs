@@ -32,7 +32,10 @@ func readConfig() config {
 		log.Fatal("config file error:", err)
 	}
 	var c config
-	viper.Unmarshal(&c)
+	err = viper.Unmarshal(&c)
+	if err != nil {
+		log.Fatal("config unmarshal error:", err)
+	}
 	return c
 }
 

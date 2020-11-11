@@ -1,6 +1,7 @@
 package network
 
 import (
+	"os"
 	"reflect"
 	"testing"
 
@@ -21,6 +22,7 @@ func TestMain(m *testing.M) {
 	c1 = &ClientImpl{}
 	c1.ConnectPeers([]string{serverAddr})
 	m.Run()
+	os.Exit(0)
 }
 
 func TestRPCServer_Receive(t *testing.T) {
@@ -29,7 +31,10 @@ func TestRPCServer_Receive(t *testing.T) {
 		Body:     "test message1",
 	}
 	var reply string
-	c1.peers[0].Call("RPCServer.Receive", msg, &reply)
+	err := c1.peers[0].Call("RPCServer.Receive", msg, &reply)
+	if err != nil {
+		t.Error(err)
+	}
 
 	result := <-c0.buf
 	if !reflect.DeepEqual(*result, *msg) {

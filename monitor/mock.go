@@ -42,7 +42,10 @@ func readConfig() mockConfig {
 		log.Fatal("config file error:", err)
 	}
 	var c mockConfig
-	viper.Unmarshal(&c)
+	err = viper.Unmarshal(&c)
+	if err != nil {
+		log.Fatal("config unmarshal error:", err)
+	}
 	return c
 }
 
@@ -52,10 +55,7 @@ func (m *MockMonitor) MonitorTx(tx common.Tx) bool {
 	r := rand.Intn(100)
 	val := int(m.probs[partyID] * 100)
 	log.Printf("(r, val)=(%v, %v)\n", r, val)
-	if r < val {
-		return false
-	}
-	return true
+	return r >= val
 }
 
 // NewMockMonitor is ...

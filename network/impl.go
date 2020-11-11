@@ -34,13 +34,21 @@ func (c *ClientImpl) ConnectPeers(peerAddrs []string) {
 
 // RunServer is ...
 func (c *ClientImpl) RunServer(addr string) {
-	rpc.Register(c.RPCServer)
-	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", addr)
-	if e != nil {
-		log.Fatal("listen error:", e)
+	err := rpc.Register(c.RPCServer)
+	if err != nil {
+		log.Fatal("rpc registration error:", err)
 	}
-	go http.Serve(l, nil)
+	rpc.HandleHTTP()
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Fatal("listen error:", err)
+	}
+	go func() {
+		err := http.Serve(l, nil)
+		if err != nil {
+			log.Fatal("serve error", err)
+		}
+	}()
 }
 
 // Broadcast calls Receive methods of all peers
