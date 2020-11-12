@@ -7,6 +7,7 @@ import (
 
 // Algorithm is ...
 type Algorithm interface {
+	InitRatings()
 	GetRatings() map[int]float64
 	UpdateRating(int, float64)
 	BroadcastMessage(*common.Message)

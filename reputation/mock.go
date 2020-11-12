@@ -26,6 +26,16 @@ type Feedback struct {
 	Bp       *Bparams
 }
 
+// InitRatings is ...
+func (m *MockManager) InitRatings() {
+	ratings := make(map[int]float64)
+	peerIDs := m.GetPeers()
+	for _, p := range peerIDs {
+		ratings[p] = 0.0
+	}
+	m.ratings = ratings
+}
+
 // GetRatings is ...
 func (m *MockManager) GetRatings() map[int]float64 {
 	return m.ratings
@@ -57,24 +67,13 @@ func (m *MockManager) CombineFeedback() {
 	}
 }
 
-// FIXME: mock
-func initRatings(id int) map[int]float64 {
-	ratings := make(map[int]float64)
-	if id == 0 {
-		ratings[1] = 0
-	} else {
-		ratings[0] = 0
-	}
-	return ratings
-}
-
 // NewMockManager is ...
 func NewMockManager(id int) *MockManager {
 	gob.Register(Feedback{})
 	mock := &MockManager{
 		id:         id,
-		ratings:    initRatings(id),
 		ClientImpl: network.NewClientImpl(id),
 	}
+	mock.InitRatings()
 	return mock
 }
