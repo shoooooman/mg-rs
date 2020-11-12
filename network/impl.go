@@ -14,20 +14,19 @@ const bufsize = 5
 
 // ClientImpl is ...
 type ClientImpl struct {
-	peers []*rpc.Client
+	peers []*Peer
 	buf   chan *common.Message
 	*RPCServer
 }
 
 // ConnectPeers is ...
-func (c *ClientImpl) ConnectPeers(peerAddrs []string) {
-	peers := make([]*rpc.Client, len(peerAddrs))
-	for i, addr := range peerAddrs {
-		peer, err := rpc.DialHTTP("tcp", addr)
+func (c *ClientImpl) ConnectPeers(peers []*Peer) {
+	for _, p := range peers {
+		client, err := rpc.DialHTTP("tcp", p.Address)
 		if err != nil {
 			log.Fatal("dialing:", err)
 		}
-		peers[i] = peer
+		p.Client = client
 	}
 	c.peers = peers
 }
@@ -55,7 +54,7 @@ func (c *ClientImpl) RunServer(addr string) {
 func (c *ClientImpl) Broadcast(msg *common.Message) {
 	for _, p := range c.peers {
 		var reply string
-		err := p.Call("RPCServer.Receive", msg, &reply)
+		err := p.Client.Call("RPCServer.Receive", msg, &reply)
 		if err != nil {
 			log.Fatal("calling:", err)
 		}
@@ -66,6 +65,15 @@ func (c *ClientImpl) Broadcast(msg *common.Message) {
 // GetData receives a message from buf (if empty, waits for receiving)
 func (c *ClientImpl) GetData() *common.Message {
 	return <-c.buf
+}
+
+// GetPeers returns IDs of the peers
+func (c *ClientImpl) GetPeers() []int {
+	ids := make([]int, len(c.peers))
+	for i, p := range c.peers {
+		ids[i] = p.ID
+	}
+	return ids
 }
 
 // NewClientImpl is ...
@@ -81,8 +89,8 @@ func NewClientImpl(id int) *ClientImpl {
 
 	time.Sleep(time.Second * 5)
 
-	peerAddrs := conf.getPeerAddrs(id)
-	client.ConnectPeers(peerAddrs)
+	peers := conf.getPeers(id)
+	client.ConnectPeers(peers)
 
 	return client
 }

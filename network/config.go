@@ -11,7 +11,7 @@ type config struct {
 	NodeMap map[int]*Node
 }
 
-// Node is ...
+// Node is a struct for viper unmarshal
 type Node struct {
 	ID      int    `mapstructure:"id"`
 	Address string `mapstructure:"address"`
@@ -35,6 +35,7 @@ func readConfig() *config {
 	return &c
 }
 
+// setNodeMap converts a slice of Node to map[ID]*Node and set it to NodeMap
 func setNodeMap(conf *config) {
 	mp := make(map[int]*Node)
 	for _, n := range conf.Nodes {
@@ -51,22 +52,15 @@ func (c *config) getAddr(id int) string {
 	return c.NodeMap[id].Address
 }
 
-func (c *config) getPeerIDs(id int) []int {
+func (c *config) getPeers(id int) []*Peer {
 	if _, ok := c.NodeMap[id]; !ok {
 		log.Fatal("wrong id error")
 	}
-	return c.NodeMap[id].Peers
-}
-
-func (c *config) getPeerAddrs(id int) []string {
-	if _, ok := c.NodeMap[id]; !ok {
-		log.Fatal("wrong id error")
+	peerIDs := c.NodeMap[id].Peers
+	peers := make([]*Peer, len(peerIDs))
+	for i, pid := range peerIDs {
+		p := c.NodeMap[pid]
+		peers[i] = &Peer{ID: p.ID, Address: p.Address, Client: nil}
 	}
-	node := c.NodeMap[id]
-	peers := node.Peers
-	addrs := make([]string, len(peers))
-	for i, p := range peers {
-		addrs[i] = c.getAddr(p)
-	}
-	return addrs
+	return peers
 }

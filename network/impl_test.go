@@ -20,7 +20,8 @@ func TestMain(m *testing.M) {
 	c0.RunServer(serverAddr)
 
 	c1 = &ClientImpl{}
-	c1.ConnectPeers([]string{serverAddr})
+	peer := &Peer{ID: 0, Address: serverAddr, Client: nil}
+	c1.ConnectPeers([]*Peer{peer})
 	m.Run()
 	os.Exit(0)
 }
@@ -31,7 +32,7 @@ func TestRPCServer_Receive(t *testing.T) {
 		Body:     "test message1",
 	}
 	var reply string
-	err := c1.peers[0].Call("RPCServer.Receive", msg, &reply)
+	err := c1.peers[0].Client.Call("RPCServer.Receive", msg, &reply)
 	if err != nil {
 		t.Error(err)
 	}
@@ -62,5 +63,19 @@ func TestClientImpl_Broadcast(t *testing.T) {
 		if !reflect.DeepEqual(*msgs[i], *result) {
 			t.Errorf("\nexpected: %v\nactual: %v\n", *msgs[i], *result)
 		}
+	}
+}
+
+func TestClientImpl_GetPeers(t *testing.T) {
+	c := &ClientImpl{}
+	c.peers = []*Peer{
+		{ID: 0, Address: "127.0.0.1:10000", Client: nil},
+		{ID: 1, Address: "127.0.0.1:10000", Client: nil},
+		{ID: 2, Address: "127.0.0.1:10000", Client: nil},
+	}
+	expected := []int{0, 1, 2}
+	result := c.GetPeers()
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("\nexpected: %v\nactual: %v\n", expected, result)
 	}
 }

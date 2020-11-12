@@ -48,23 +48,20 @@ func TestConfig_getAddr(t *testing.T) {
 	}
 }
 
-func TestConfig_getPeerIDs(t *testing.T) {
+func TestConfig_getPeers(t *testing.T) {
 	for _, n := range conf.Nodes {
-		peerIDs := conf.getPeerIDs(n.ID)
-		if !reflect.DeepEqual(peerIDs, conf.NodeMap[n.ID].Peers) {
-			t.Errorf("\nexpected: %v\nactual: %v\n", conf.NodeMap[n.ID].Peers, peerIDs)
-		}
-	}
-}
-
-func TestConfig_getPeerAddrs(t *testing.T) {
-	for _, n := range conf.Nodes {
-		paddrs := conf.getPeerAddrs(n.ID)
-		nd := conf.NodeMap[n.ID]
-		for j, paddr := range paddrs {
-			peerID := nd.Peers[j]
-			if paddr != conf.NodeMap[peerID].Address {
-				t.Errorf("\nexpected: %v\nactual: %v\n", conf.NodeMap[peerID].Address, paddr)
+		peers := conf.getPeers(n.ID)
+		ids := expected[n.ID].Peers
+		for j, p := range peers {
+			ex := expected[ids[j]]
+			if p.ID != ex.ID {
+				t.Errorf("\nexpected: %v\nactual: %v\n", ex.ID, p.ID)
+			}
+			if p.Address != ex.Address {
+				t.Errorf("\nexpected: %v\nactual: %v\n", ex.Address, p.Address)
+			}
+			if p.Client != nil {
+				t.Errorf("\nexpected: nil\nactual: %v\n", p.Client)
 			}
 		}
 	}
