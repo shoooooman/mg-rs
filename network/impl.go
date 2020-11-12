@@ -76,12 +76,12 @@ func NewClientImpl(id int) *ClientImpl {
 
 	conf := readConfig()
 
-	addr := getAddr(conf, id)
+	addr := conf.getAddr(id)
 	client.RunServer(addr)
 
 	time.Sleep(time.Second * 5)
 
-	peerAddrs := getPeerAddrs(conf, id)
+	peerAddrs := conf.getPeerAddrs(id)
 	client.ConnectPeers(peerAddrs)
 
 	return client

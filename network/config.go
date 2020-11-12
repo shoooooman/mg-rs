@@ -7,23 +7,18 @@ import (
 )
 
 type config struct {
-	Nodes []Node `mapstructure:"nodes"`
+	Nodes   []Node `mapstructure:"nodes"`
+	NodeMap map[int]*Node
 }
 
 // Node is ...
 type Node struct {
 	ID      int    `mapstructure:"id"`
 	Address string `mapstructure:"address"`
-	Peers   []Peer `mapstructure:"peers"`
+	Peers   []int  `mapstructure:"peers"`
 }
 
-// Peer is ...
-type Peer struct {
-	ID      int    `mapstructure:"id"`
-	Address string `mapstructure:"address"`
-}
-
-func readConfig() config {
+func readConfig() *config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("json")
 	viper.AddConfigPath("./network")
@@ -36,25 +31,42 @@ func readConfig() config {
 	if err != nil {
 		log.Fatal("config unmarshal error:", err)
 	}
-	return c
+	setNodeMap(&c)
+	return &c
 }
 
-func getAddr(conf config, id int) string {
-	if len(conf.Nodes)-1 < id {
-		log.Fatal("wrong id error")
+func setNodeMap(conf *config) {
+	mp := make(map[int]*Node)
+	for _, n := range conf.Nodes {
+		cp := n
+		mp[cp.ID] = &cp // &nとするとループの度に参照先が変更されてしまう
 	}
-	return conf.Nodes[id].Address
+	conf.NodeMap = mp
 }
 
-func getPeerAddrs(conf config, id int) []string {
-	if len(conf.Nodes)-1 < id {
+func (c *config) getAddr(id int) string {
+	if _, ok := c.NodeMap[id]; !ok {
 		log.Fatal("wrong id error")
 	}
-	node := conf.Nodes[id]
+	return c.NodeMap[id].Address
+}
+
+func (c *config) getPeerIDs(id int) []int {
+	if _, ok := c.NodeMap[id]; !ok {
+		log.Fatal("wrong id error")
+	}
+	return c.NodeMap[id].Peers
+}
+
+func (c *config) getPeerAddrs(id int) []string {
+	if _, ok := c.NodeMap[id]; !ok {
+		log.Fatal("wrong id error")
+	}
+	node := c.NodeMap[id]
 	peers := node.Peers
 	addrs := make([]string, len(peers))
 	for i, p := range peers {
-		addrs[i] = p.Address
+		addrs[i] = c.getAddr(p)
 	}
 	return addrs
 }
