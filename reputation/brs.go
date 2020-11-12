@@ -32,10 +32,12 @@ type BrsFB struct {
 func (m *Brs) InitRatings() {
 	params := make(map[int]*BrsBP)
 	ratings := make(map[int]float64)
-	peerIDs := m.GetPeers()
-	for _, p := range peerIDs {
-		params[p] = &BrsBP{R: 0.0, S: 0.0}
-		ratings[p] = 0.5
+	ids := m.GetIDs()
+	for _, id := range ids {
+		if id != m.id {
+			params[id] = &BrsBP{R: 0.0, S: 0.0}
+			ratings[id] = 0.5
+		}
 	}
 	m.params = params
 	m.ratings = ratings
@@ -49,9 +51,9 @@ func (m *Brs) GetRatings() map[int]float64 {
 // UpdateRating is ...
 func (m *Brs) UpdateRating(id int, result float64) {
 	if result >= 0 {
-		m.params[id].R += result
+		m.params[id].S += result // success
 	} else {
-		m.params[id].S += math.Abs(result)
+		m.params[id].R += math.Abs(result) // failure
 	}
 	m.ratings[id] = brsCalcExp(m.params[id])
 }

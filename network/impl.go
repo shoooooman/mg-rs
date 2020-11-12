@@ -14,8 +14,9 @@ const bufsize = 5
 
 // ClientImpl is ...
 type ClientImpl struct {
-	peers []*Peer
-	buf   chan *common.Message
+	nodeIDs []int
+	peers   []*Peer
+	buf     chan *common.Message
 	*RPCServer
 }
 
@@ -68,12 +69,18 @@ func (c *ClientImpl) GetData() *common.Message {
 }
 
 // GetPeers returns IDs of the peers
+// FIXME: Not using
 func (c *ClientImpl) GetPeers() []int {
 	ids := make([]int, len(c.peers))
 	for i, p := range c.peers {
 		ids[i] = p.ID
 	}
 	return ids
+}
+
+// GetIDs returns the all IDs of the network
+func (c *ClientImpl) GetIDs() []int {
+	return c.nodeIDs
 }
 
 // NewClientImpl is ...
@@ -83,6 +90,8 @@ func NewClientImpl(id int) *ClientImpl {
 	client.RPCServer = &RPCServer{client.buf}
 
 	conf := readConfig()
+
+	client.nodeIDs = conf.getIDs()
 
 	addr := conf.getAddr(id)
 	client.RunServer(addr)

@@ -64,3 +64,11 @@ func (c *config) getPeers(id int) []*Peer {
 	}
 	return peers
 }
+
+func (c *config) getIDs() []int {
+	ids := make([]int, len(c.Nodes))
+	for i, n := range c.Nodes {
+		ids[i] = n.ID
+	}
+	return ids
+}

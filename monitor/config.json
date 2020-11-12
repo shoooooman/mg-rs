@@ -3,15 +3,30 @@
         {
             "id": 0,
             "kind": "fixed",
-            "probability": 0.2
+            "probability": 0.0
         },
         {
             "id": 1,
             "kind": "fixed",
-            "probability": 0.5
+            "probability": 0.1
         },
         {
             "id": 2,
+            "kind": "fixed",
+            "probability": 0.2
+        },
+        {
+            "id": 3,
+            "kind": "fixed",
+            "probability": 0.3
+        },
+        {
+            "id": 4,
+            "kind": "fixed",
+            "probability": 0.4
+        },
+        {
+            "id": 999,
             "kind": "variable",
             "var_probs": [
                 {

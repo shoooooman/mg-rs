@@ -14,17 +14,35 @@ var expected = []Behavior{
 	{
 		ID:    0,
 		Kind:  "fixed",
-		Prob:  0.2,
+		Prob:  0.0,
 		VProb: nil,
 	},
 	{
 		ID:    1,
 		Kind:  "fixed",
-		Prob:  0.5,
+		Prob:  0.1,
 		VProb: nil,
 	},
 	{
-		ID:   2,
+		ID:    2,
+		Kind:  "fixed",
+		Prob:  0.2,
+		VProb: nil,
+	},
+	{
+		ID:    3,
+		Kind:  "fixed",
+		Prob:  0.3,
+		VProb: nil,
+	},
+	{
+		ID:    4,
+		Kind:  "fixed",
+		Prob:  0.4,
+		VProb: nil,
+	},
+	{
+		ID:   999,
 		Kind: "variable",
 		Prob: 0.0,
 		VProb: []*VP{
