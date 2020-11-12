@@ -8,9 +8,9 @@ import (
 // Algorithm is ...
 type Algorithm interface {
 	GetRatings() map[int]float64
-	UpdateRating(int, bool)
+	UpdateRating(int, float64)
 	BroadcastMessage(*common.Message)
-	TakeReputation()
+	CombineFeedback()
 }
 
 // Manager is ...

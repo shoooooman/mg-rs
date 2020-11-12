@@ -26,7 +26,7 @@ func main() {
 
 	go func() {
 		for {
-			a.TakeReputation()
+			a.CombineFeedback()
 		}
 	}()
 
@@ -37,7 +37,13 @@ func main() {
 		log.Printf("req: %d with %d\n", a.ID, party)
 		tx := common.Tx{ID: req.ID, PartyID: party}
 		behavior := a.MonitorTx(tx)
-		a.UpdateRating(party, behavior)
+		var result float64
+		if behavior {
+			result = 1.0
+		} else {
+			result = -1.0
+		}
+		a.UpdateRating(party, result)
 		fb := &reputation.Feedback{
 			TargetID: party,
 			Bp:       &reputation.Bparams{A: 0, B: 1},

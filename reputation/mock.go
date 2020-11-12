@@ -32,12 +32,8 @@ func (m *MockManager) GetRatings() map[int]float64 {
 }
 
 // UpdateRating is ...
-func (m *MockManager) UpdateRating(id int, behavior bool) {
-	if behavior {
-		m.ratings[id]++
-	} else {
-		m.ratings[id]--
-	}
+func (m *MockManager) UpdateRating(id int, result float64) {
+	m.ratings[id] += result
 }
 
 // BroadcastMessage is ...
@@ -45,8 +41,8 @@ func (m *MockManager) BroadcastMessage(msg *common.Message) {
 	m.Broadcast(msg)
 }
 
-// TakeReputation is ...
-func (m *MockManager) TakeReputation() {
+// CombineFeedback is ...
+func (m *MockManager) CombineFeedback() {
 	msg := m.GetData()
 	s := msg.SenderID
 	fb, ok := msg.Body.(Feedback)
