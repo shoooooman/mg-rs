@@ -69,7 +69,6 @@ func (c *ClientImpl) GetData() *common.Message {
 }
 
 // GetPeers returns IDs of the peers
-// FIXME: Not using
 func (c *ClientImpl) GetPeers() []int {
 	ids := make([]int, len(c.peers))
 	for i, p := range c.peers {

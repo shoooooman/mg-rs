@@ -3,7 +3,6 @@ package run
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/shoooooman/mg-rs/agent"
 	"github.com/shoooooman/mg-rs/common"
@@ -12,25 +11,28 @@ import (
 
 // Brs is ...
 func Brs(a *agent.Agent, n int) {
-	go func() {
-		for {
-			a.CombineFeedback()
-		}
-	}()
-
+	var (
+		success = 0
+		failure = 0
+	)
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID
+
 		tx := common.Tx{ID: req.ID, PartyID: party}
 		behavior := a.MonitorTx(tx)
+
 		var result float64
 		if behavior {
 			result = 1.0
+			success++
 		} else {
 			result = -1.0
+			failure++
 		}
 		log.Printf("result (%d with %d): %v\n", a.ID, party, result)
 		a.UpdateRating(party, result)
+
 		var bp *reputation.BrsBP
 		if behavior {
 			bp = &reputation.BrsBP{R: 0.0, S: 1.0}
@@ -43,7 +45,12 @@ func Brs(a *agent.Agent, n int) {
 		}
 		msg := &common.Message{SenderID: a.ID, Body: fb}
 		a.BroadcastMessage(msg)
+
+		peers := a.GetPeers()
+		for i := 0; i < len(peers); i++ {
+			a.CombineFeedback()
+		}
 	}
-	time.Sleep(time.Second * 5)
+	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	fmt.Println(a.ID, a.GetRatings())
 }
