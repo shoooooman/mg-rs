@@ -19,15 +19,16 @@ type Node struct {
 }
 
 func readConfig() *config {
-	viper.SetConfigName("config")
-	viper.SetConfigType("json")
-	viper.AddConfigPath("./network")
-	err := viper.ReadInConfig()
+	v := viper.New()
+	v.SetConfigName("config")
+	v.SetConfigType("json")
+	v.AddConfigPath("./network")
+	err := v.ReadInConfig()
 	if err != nil {
 		log.Fatal("config file error:", err)
 	}
 	var c config
-	err = viper.Unmarshal(&c)
+	err = v.Unmarshal(&c)
 	if err != nil {
 		log.Fatal("config unmarshal error:", err)
 	}
@@ -47,14 +48,14 @@ func setNodeMap(conf *config) {
 
 func (c *config) getAddr(id int) string {
 	if _, ok := c.NodeMap[id]; !ok {
-		log.Fatal("wrong id error")
+		log.Fatalf("getAddr: wrong id (%d) error", id)
 	}
 	return c.NodeMap[id].Address
 }
 
 func (c *config) getPeers(id int) []*Peer {
 	if _, ok := c.NodeMap[id]; !ok {
-		log.Fatal("wrong id error")
+		log.Fatalf("getPeers: wrong id (%d) error", id)
 	}
 	peerIDs := c.NodeMap[id].Peers
 	peers := make([]*Peer, len(peerIDs))
