@@ -33,8 +33,9 @@ type VP struct {
 	Prob float64 `mapstructure:"value"`
 }
 
+var v = viper.New()
+
 func readConfig() mockConfig {
-	v := viper.New()
 	v.SetConfigName("config")
 	v.SetConfigType("json")
 	v.AddConfigPath("./monitor")

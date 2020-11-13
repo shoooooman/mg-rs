@@ -3,8 +3,6 @@ package network
 import (
 	"reflect"
 	"testing"
-
-	"github.com/spf13/viper"
 )
 
 // according to config.json
@@ -39,7 +37,7 @@ var expected = []Node{
 var conf *config
 
 func TestReadConfig(t *testing.T) {
-	viper.AddConfigPath(".")
+	v.AddConfigPath(".")
 	conf = readConfig()
 
 	nodes := conf.Nodes

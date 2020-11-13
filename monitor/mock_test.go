@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/shoooooman/mg-rs/common"
-	"github.com/spf13/viper"
 )
 
 var expected = []Behavior{
@@ -53,7 +52,7 @@ var expected = []Behavior{
 }
 
 func TestReadConfig(t *testing.T) {
-	viper.AddConfigPath(".")
+	v.AddConfigPath(".")
 	conf := readConfig()
 	if !reflect.DeepEqual(conf.Behaviors, expected) {
 		t.Errorf("\nexpected: %v\nactual: %v\n", expected, conf.Behaviors)
