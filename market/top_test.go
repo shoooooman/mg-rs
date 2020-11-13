@@ -8,6 +8,7 @@ import (
 )
 
 func TestTopGateway_GetTxReq(t *testing.T) {
+	reqID = 0
 	tg := &TopGateway{}
 
 	ratings := map[int]float64{
