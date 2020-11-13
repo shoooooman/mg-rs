@@ -2,6 +2,7 @@ package reputation
 
 import (
 	"encoding/gob"
+	"fmt"
 	"log"
 	"math"
 
@@ -20,6 +21,11 @@ type Brs struct {
 // BrsBP is ...
 type BrsBP struct {
 	R, S float64
+}
+
+// String is for debugging
+func (bp *BrsBP) String() string {
+	return fmt.Sprintf("(%v, %v)", bp.R, bp.S)
 }
 
 // BrsFB is ...
@@ -76,21 +82,26 @@ func (m *Brs) CombineFeedback() {
 	log.Printf("reputation from %d on %d: %v\n", src, tgt, *bp)
 	if tgt != m.id {
 		den := (m.params[src].S+2.0)*(bp.R+bp.S+2.0) + 2.0*m.params[src].R
-		m.params[tgt].R = 2.0 * m.params[src].R * bp.R / den
-		m.params[tgt].S = 2.0 * m.params[src].R * bp.S / den
+		m.params[tgt].R += 2.0 * m.params[src].R * bp.R / den
+		m.params[tgt].S += 2.0 * m.params[src].R * bp.S / den
 		m.ratings[tgt] = brsCalcExp(m.params[tgt])
 	}
+}
+
+// GetParams is for debugging
+func (m *Brs) GetParams() map[int]*BrsBP {
+	return m.params
 }
 
 // NewBrs is ...
 func NewBrs(id int) *Brs {
 	gob.Register(BrsFB{})
-	mock := &Brs{
+	brs := &Brs{
 		id:         id,
 		ClientImpl: network.NewClientImpl(id),
 	}
-	mock.InitRatings()
-	return mock
+	brs.InitRatings()
+	return brs
 }
 
 func brsCalcExp(p *BrsBP) float64 {
