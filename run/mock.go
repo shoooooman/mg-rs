@@ -11,22 +11,13 @@ import (
 )
 
 // Mock is ...
-func Mock(id int) {
-	a := agent.NewAgent(id)
-	if err := a.SetGateway("top"); err != nil {
-		log.Fatal("SetGateway:", err)
-	}
-	if err := a.SetManager("mock"); err != nil {
-		log.Fatal("SetManager:", err)
-	}
-
+func Mock(a *agent.Agent, n int) {
 	go func() {
 		for {
 			a.CombineFeedback()
 		}
 	}()
 
-	const n = 5
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID

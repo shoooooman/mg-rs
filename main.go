@@ -18,6 +18,5 @@ func main() {
 		log.Fatal("id error")
 	}
 
-	// run.Mock(id)
-	run.Brs(id)
+	run.Run(id)
 }

@@ -11,22 +11,13 @@ import (
 )
 
 // Brs is ...
-func Brs(id int) {
-	a := agent.NewAgent(id)
-	if err := a.SetGateway("toprand"); err != nil {
-		log.Fatal("SetGateway:", err)
-	}
-	if err := a.SetManager("brs"); err != nil {
-		log.Fatal("SetManager:", err)
-	}
-
+func Brs(a *agent.Agent, n int) {
 	go func() {
 		for {
 			a.CombineFeedback()
 		}
 	}()
 
-	const n = 100
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID

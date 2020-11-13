@@ -1,0 +1,6 @@
+{
+    "reputation_manager": "brs",
+    "gateway": "toprand",
+    "scenario": "brs_simple",
+    "tx_num": 100
+}
