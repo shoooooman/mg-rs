@@ -78,3 +78,16 @@ func TestMockMonitor_MonitorTx(t *testing.T) {
 		}
 	}
 }
+
+func TestNewMockMonitor(t *testing.T) {
+	result := NewMockMonitor()
+	probs := make(map[int]float64)
+	for _, b := range expected {
+		if b.Kind == "fixed" {
+			probs[b.ID] = b.Prob
+		}
+	}
+	if !reflect.DeepEqual(result.probs, probs) {
+		t.Errorf("\nexpected: %v\nactual: %v\n", probs, result.probs)
+	}
+}

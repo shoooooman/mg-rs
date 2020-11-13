@@ -34,15 +34,16 @@ type VP struct {
 }
 
 func readConfig() mockConfig {
-	viper.SetConfigName("config")
-	viper.SetConfigType("json")
-	viper.AddConfigPath("./monitor")
-	err := viper.ReadInConfig()
+	v := viper.New()
+	v.SetConfigName("config")
+	v.SetConfigType("json")
+	v.AddConfigPath("./monitor")
+	err := v.ReadInConfig()
 	if err != nil {
 		log.Fatal("config file error:", err)
 	}
 	var c mockConfig
-	err = viper.Unmarshal(&c)
+	err = v.Unmarshal(&c)
 	if err != nil {
 		log.Fatal("config unmarshal error:", err)
 	}
@@ -54,7 +55,6 @@ func (m *MockMonitor) MonitorTx(tx common.Tx) bool {
 	partyID := tx.PartyID
 	r := rand.Intn(100)
 	val := int(m.probs[partyID] * 100)
-	log.Printf("(r, val)=(%v, %v)\n", r, val)
 	return r >= val
 }
 
