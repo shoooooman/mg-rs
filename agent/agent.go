@@ -24,6 +24,8 @@ func (a *Agent) SetGateway(gw string) error {
 	switch gw {
 	case "top":
 		a.Gateway = &market.TopGateway{}
+	case "toprand":
+		a.Gateway = &market.TopRandGateway{}
 	default:
 		return fmt.Errorf("no such a gateway")
 	}
@@ -48,7 +50,7 @@ func NewAgent(id int) *Agent {
 	a := &Agent{
 		ID:        id,
 		Gateway:   nil,
-		Monitor:   &monitor.MockMonitor{},
+		Monitor:   monitor.NewMockMonitor(),
 		Manager:   nil,
 		TxReqs:    make(map[int]common.TxReq),
 		TxHistory: make(map[int]common.Tx),
