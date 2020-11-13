@@ -15,7 +15,7 @@ type Brs struct {
 	id      int
 	params  map[int]*BrsBP
 	ratings map[int]float64
-	*network.ClientImpl
+	network.Client
 }
 
 // BrsBP is ...
@@ -97,8 +97,8 @@ func (m *Brs) GetParams() map[int]*BrsBP {
 func NewBrs(id int) *Brs {
 	gob.Register(BrsFB{})
 	brs := &Brs{
-		id:         id,
-		ClientImpl: network.NewClientImpl(id),
+		id:     id,
+		Client: network.NewClientImpl(id),
 	}
 	brs.InitRatings()
 	return brs

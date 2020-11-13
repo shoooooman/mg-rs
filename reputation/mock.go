@@ -12,7 +12,7 @@ import (
 type MockManager struct {
 	id      int
 	ratings map[int]float64
-	*network.ClientImpl
+	network.Client
 }
 
 // Bparams is ...
@@ -71,8 +71,8 @@ func (m *MockManager) CombineFeedback() {
 func NewMockManager(id int) *MockManager {
 	gob.Register(Feedback{})
 	mock := &MockManager{
-		id:         id,
-		ClientImpl: network.NewClientImpl(id),
+		id:     id,
+		Client: network.NewClientImpl(id),
 	}
 	mock.InitRatings()
 	return mock

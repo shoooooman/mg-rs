@@ -13,6 +13,8 @@ type Client interface {
 	Broadcast(*common.Message)
 	Receive(*common.Message, *string) error
 	GetData() *common.Message
+	GetPeers() []int
+	GetIDs() []int
 }
 
 // Peer is ...
