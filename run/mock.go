@@ -13,8 +13,12 @@ import (
 // Mock is ...
 func Mock(id int) {
 	a := agent.NewAgent(id)
-	a.SetGateway("top")
-	a.SetManager("mock")
+	if err := a.SetGateway("top"); err != nil {
+		log.Fatal("SetGateway:", err)
+	}
+	if err := a.SetManager("mock"); err != nil {
+		log.Fatal("SetManager:", err)
+	}
 
 	go func() {
 		for {

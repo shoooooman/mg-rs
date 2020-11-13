@@ -13,8 +13,12 @@ import (
 // Brs is ...
 func Brs(id int) {
 	a := agent.NewAgent(id)
-	a.SetGateway("top")
-	a.SetManager("brs")
+	if err := a.SetGateway("toprand"); err != nil {
+		log.Fatal("SetGateway:", err)
+	}
+	if err := a.SetManager("brs"); err != nil {
+		log.Fatal("SetManager:", err)
+	}
 
 	go func() {
 		for {
@@ -22,11 +26,10 @@ func Brs(id int) {
 		}
 	}()
 
-	const n = 20
+	const n = 100
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID
-		log.Printf("req: %d with %d\n", a.ID, party)
 		tx := common.Tx{ID: req.ID, PartyID: party}
 		behavior := a.MonitorTx(tx)
 		var result float64
@@ -35,6 +38,7 @@ func Brs(id int) {
 		} else {
 			result = -1.0
 		}
+		log.Printf("result (%d with %d): %v\n", a.ID, party, result)
 		a.UpdateRating(party, result)
 		var bp *reputation.BrsBP
 		if behavior {
