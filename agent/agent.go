@@ -22,6 +22,8 @@ type Agent struct {
 // SetGateway is ...
 func (a *Agent) SetGateway(gw string) error {
 	switch gw {
+	case "random":
+		a.Gateway = &market.RandomGateway{}
 	case "top":
 		a.Gateway = &market.TopGateway{}
 	case "toprand":
