@@ -11,6 +11,7 @@ type config struct {
 	Gateway  string `mapstructure:"gateway"`
 	Scenario string `mapstructure:"scenario"`
 	N        int    `mapstructure:"tx_num"`
+	K        int    `mapstructure:"run_num"`
 }
 
 var v = viper.New()

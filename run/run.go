@@ -2,8 +2,13 @@ package run
 
 import (
 	"log"
+	"os"
 
 	"github.com/shoooooman/mg-rs/agent"
+)
+
+var (
+	rlog = log.New(os.Stderr, "[ANALYSIS] ", log.LstdFlags)
 )
 
 // Run is ...
@@ -13,6 +18,7 @@ func Run(id int) {
 	gateway := conf.Gateway
 	scenario := conf.Scenario
 	n := conf.N
+	k := conf.K
 
 	a := agent.NewAgent(id)
 	if err := a.SetGateway(gateway); err != nil {
@@ -22,12 +28,17 @@ func Run(id int) {
 		log.Fatal("SetManager:", err)
 	}
 
+	var f func(*agent.Agent, int)
 	switch scenario {
 	case "mock":
-		Mock(a, n)
+		f = Mock
 	case "brs_simple":
-		Brs(a, n)
+		f = Brs
 	default:
 		log.Fatal("Run: no such a manager")
+	}
+
+	for i := 0; i < k; i++ {
+		f(a, n)
 	}
 }

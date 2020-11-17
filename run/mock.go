@@ -15,6 +15,7 @@ func Mock(a *agent.Agent, n int) {
 		success = 0
 		failure = 0
 	)
+	a.InitRatings()
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID
@@ -45,6 +46,6 @@ func Mock(a *agent.Agent, n int) {
 			a.CombineFeedback()
 		}
 	}
-	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
+	rlog.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	fmt.Println(a.ID, a.GetRatings())
 }

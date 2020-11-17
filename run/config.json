@@ -2,5 +2,6 @@
     "reputation_manager": "brs",
     "gateway": "toprand",
     "scenario": "brs_simple",
-    "tx_num": 100
+    "tx_num": 100,
+    "run_num": 10
 }
