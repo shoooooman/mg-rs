@@ -34,6 +34,8 @@ func Run(id int) {
 		f = Mock
 	case "brs_simple":
 		f = Brs
+	case "bdf_simple":
+		f = Bdf
 	default:
 		log.Fatal("Run: no such a manager")
 	}

@@ -41,6 +41,8 @@ func (a *Agent) SetManager(rm string) error {
 		a.Manager = reputation.NewMockManager(a.ID)
 	case "brs":
 		a.Manager = reputation.NewBrs(a.ID)
+	case "bdf":
+		a.Manager = reputation.NewBdf(a.ID)
 	default:
 		return fmt.Errorf("no such a reputation manager")
 	}
