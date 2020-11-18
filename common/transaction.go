@@ -9,5 +9,6 @@ type TxReq struct {
 // Tx is ...
 type Tx struct {
 	ID      int
+	Time    int
 	PartyID int
 }

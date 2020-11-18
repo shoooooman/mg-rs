@@ -11,7 +11,7 @@ import (
 
 // MockMonitor is ...
 type MockMonitor struct {
-	probs map[int]float64
+	probs map[int]func(int) float64 // each probability func mapped with id
 }
 
 type mockConfig struct {
@@ -33,10 +33,14 @@ type VP struct {
 	Prob float64 `mapstructure:"value"`
 }
 
-var v = viper.New()
+var (
+	v            = viper.New()
+	reader       = readConfig
+	confFilename = "config"
+)
 
 func readConfig() mockConfig {
-	v.SetConfigName("config")
+	v.SetConfigName(confFilename)
 	v.SetConfigType("json")
 	v.AddConfigPath("./monitor")
 	err := v.ReadInConfig()
@@ -53,9 +57,11 @@ func readConfig() mockConfig {
 
 // MonitorTx is ...
 func (m *MockMonitor) MonitorTx(tx common.Tx) bool {
+	time := tx.Time
 	partyID := tx.PartyID
+	f := m.probs[partyID]
+	val := int(f(time) * 100)
 	r := rand.Intn(100)
-	val := int(m.probs[partyID] * 100)
 	return r >= val
 }
 
@@ -64,15 +70,26 @@ func NewMockMonitor() *MockMonitor {
 	rand.Seed(time.Now().UnixNano())
 	mock := &MockMonitor{}
 
-	probs := make(map[int]float64)
-	conf := readConfig()
+	conf := reader()
+	probs := make(map[int]func(int) float64)
 	for _, b := range conf.Behaviors {
 		id := b.ID
 		kind := b.Kind
+		prob := b.Prob
 		if kind == "fixed" {
-			probs[id] = b.Prob
+			probs[id] = func(t int) float64 {
+				return prob
+			}
 		} else if kind == "variable" {
-			// TODO: variable probを実装する
+			probs[id] = func(t int) float64 {
+				for _, vprob := range b.VProb {
+					if t >= vprob.L && t < vprob.R {
+						return vprob.Prob
+					}
+				}
+				log.Fatal("variable probability is not set for this time")
+				return 0.0
+			}
 		} else {
 			log.Fatal("behavior kind is error")
 		}

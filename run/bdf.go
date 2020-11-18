@@ -20,7 +20,7 @@ func Bdf(a *agent.Agent, n int) {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID
 
-		tx := common.Tx{ID: req.ID, PartyID: party}
+		tx := common.Tx{ID: req.ID, Time: i, PartyID: party}
 		behavior := a.MonitorTx(tx)
 
 		var result float64

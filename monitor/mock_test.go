@@ -52,6 +52,7 @@ var expected = []Behavior{
 }
 
 func TestReadConfig(t *testing.T) {
+	confFilename = "config_test"
 	v.AddConfigPath(".")
 	conf := readConfig()
 	if !reflect.DeepEqual(conf.Behaviors, expected) {
@@ -62,13 +63,13 @@ func TestReadConfig(t *testing.T) {
 func TestMockMonitor_MonitorTx(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	mock := &MockMonitor{}
-	probs := map[int]float64{
-		0: 0.0, // always true
-		1: 1.0, // always false
+	probs := map[int]func(int) float64{
+		0: func(t int) float64 { return 0.0 }, // always true
+		1: func(t int) float64 { return 1.0 }, // always false
 	}
 	mock.probs = probs
 
-	txs := []common.Tx{{ID: 0, PartyID: 0}, {ID: 0, PartyID: 1}}
+	txs := []common.Tx{{ID: 0, Time: 0, PartyID: 0}, {ID: 0, Time: 0, PartyID: 1}}
 	expected := []bool{true, false}
 	for i, tx := range txs {
 		result := mock.MonitorTx(tx)
@@ -79,14 +80,26 @@ func TestMockMonitor_MonitorTx(t *testing.T) {
 }
 
 func TestNewMockMonitor(t *testing.T) {
-	result := NewMockMonitor()
-	probs := make(map[int]float64)
-	for _, b := range expected {
-		if b.Kind == "fixed" {
-			probs[b.ID] = b.Prob
-		}
+	// mock reading config
+	reader = func() mockConfig {
+		return mockConfig{expected}
 	}
-	if !reflect.DeepEqual(result.probs, probs) {
-		t.Errorf("\nexpected: %v\nactual: %v\n", probs, result.probs)
+	result := NewMockMonitor()
+	testcases := map[int]map[int]float64{
+		0:   {1: 0.0, 10: 0.0},
+		1:   {1: 0.1, 21: 0.1},
+		2:   {1: 0.2, 32: 0.2},
+		3:   {1: 0.3, 43: 0.3},
+		4:   {1: 0.4, 54: 0.4},
+		999: {0: 0.1, 9: 0.1, 10: 0.9, 15: 0.9},
+	}
+
+	for id, f := range testcases {
+		for time, expected := range f {
+			actual := result.probs[id](time)
+			if actual != expected {
+				t.Errorf("\nexpected: %v\nactual: %v\n", expected, actual)
+			}
+		}
 	}
 }

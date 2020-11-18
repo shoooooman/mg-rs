@@ -21,7 +21,7 @@ func Mock(a *agent.Agent, n int) {
 		party := req.PartyID
 		log.Printf("req: %d with %d\n", a.ID, party)
 
-		tx := common.Tx{ID: req.ID, PartyID: party}
+		tx := common.Tx{ID: req.ID, Time: i, PartyID: party}
 		behavior := a.MonitorTx(tx)
 
 		var result float64
