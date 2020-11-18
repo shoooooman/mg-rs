@@ -37,6 +37,7 @@ var expected = []Node{
 var conf *config
 
 func TestReadConfig(t *testing.T) {
+	confFilename = "config_test"
 	v.AddConfigPath(".")
 	conf = readConfig()
 

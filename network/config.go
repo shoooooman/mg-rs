@@ -18,10 +18,13 @@ type Node struct {
 	Peers   []int  `mapstructure:"peers"`
 }
 
-var v = viper.New()
+var (
+	v            = viper.New()
+	confFilename = "config"
+)
 
 func readConfig() *config {
-	v.SetConfigName("config")
+	v.SetConfigName(confFilename)
 	v.SetConfigType("json")
 	v.AddConfigPath("./network")
 	err := v.ReadInConfig()
