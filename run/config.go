@@ -7,11 +7,20 @@ import (
 )
 
 type config struct {
-	Manager  string `mapstructure:"reputation_manager"`
-	Gateway  string `mapstructure:"gateway"`
-	Scenario string `mapstructure:"scenario"`
-	N        int    `mapstructure:"tx_num"`
-	K        int    `mapstructure:"run_num"`
+	Gateway  gatewayConfig  `mapstructure:"gateway"`
+	Manager  string         `mapstructure:"reputation_manager"`
+	Scenario scenarioConfig `mapstructure:"scenario"`
+	K        int            `mapstructure:"run_num"`
+}
+
+type gatewayConfig struct {
+	Name string  `mapstructure:"name"`
+	Prob float64 `mapstructure:"random_prob"`
+}
+
+type scenarioConfig struct {
+	Name string `mapstructure:"name"`
+	N    int    `mapstructure:"tx_num"`
 }
 
 var v = viper.New()

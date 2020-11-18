@@ -7,16 +7,15 @@ import (
 )
 
 // TopRandGateway is ...
-type TopRandGateway struct{}
-
-// The probability that random policy is chosen
-const randP = 1.0
+type TopRandGateway struct {
+	randP float64 // The probability that random policy is chosen
+}
 
 // GetTxReq is ...
-func (sm *TopRandGateway) GetTxReq(ratings map[int]float64) common.TxReq {
+func (gw *TopRandGateway) GetTxReq(ratings map[int]float64) common.TxReq {
 	r := rand.Intn(100)
 	// choose the party randomly
-	if r < randP*100 {
+	if r < int(gw.randP*100) {
 		rth := rand.Intn(len(ratings))
 		cnt := 0
 		var pid int
@@ -51,4 +50,9 @@ func (sm *TopRandGateway) GetTxReq(ratings map[int]float64) common.TxReq {
 	}
 	reqID++
 	return req
+}
+
+// SetRandProb is ...
+func (gw *TopRandGateway) SetRandProb(prob float64) {
+	gw.randP = prob
 }

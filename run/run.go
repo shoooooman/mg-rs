@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/shoooooman/mg-rs/agent"
+	"github.com/shoooooman/mg-rs/market"
 )
 
 var (
@@ -14,16 +15,22 @@ var (
 // Run is ...
 func Run(id int) {
 	conf := readConfig()
-	manager := conf.Manager
-	gateway := conf.Gateway
-	scenario := conf.Scenario
-	n := conf.N
-	k := conf.K
+	var (
+		gateway  = conf.Gateway.Name
+		manager  = conf.Manager
+		scenario = conf.Scenario.Name
+		n        = conf.Scenario.N
+		k        = conf.K
+	)
 
 	a := agent.NewAgent(id)
 	if err := a.SetGateway(gateway); err != nil {
 		log.Fatal("SetGateway:", err)
 	}
+	if gw, ok := a.Gateway.(*market.TopRandGateway); ok {
+		gw.SetRandProb(conf.Gateway.Prob)
+	}
+
 	if err := a.SetManager(manager); err != nil {
 		log.Fatal("SetManager:", err)
 	}
