@@ -29,9 +29,11 @@ type Feedback struct {
 // InitRatings is ...
 func (m *MockManager) InitRatings() {
 	ratings := make(map[int]float64)
-	peerIDs := m.GetPeers()
-	for _, p := range peerIDs {
-		ratings[p] = 0.0
+	ids := m.GetIDs()
+	for _, id := range ids {
+		if id != m.id {
+			ratings[id] = 0.0
+		}
 	}
 	m.ratings = ratings
 }
