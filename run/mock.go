@@ -46,6 +46,7 @@ func Mock(a *agent.Agent, n int) {
 			a.CombineFeedback()
 		}
 	}
-	rlog.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
+	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
+	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
 	fmt.Println(a.ID, a.GetRatings())
 }

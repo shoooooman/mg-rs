@@ -51,9 +51,10 @@ func Brs(a *agent.Agent, n int) {
 		for i := 0; i < len(peers); i++ {
 			a.CombineFeedback()
 		}
+		rlog.Printf("[ratings] %d %d %v\n", a.ID, i, a.GetRatings())
 	}
-	rlog.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Brs).GetParams())
-	rlog.Printf("%d: %v\n", a.ID, a.GetRatings())
-	rlog.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
+	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Brs).GetParams())
+	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
+	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
 	fmt.Println(a.ID, a.GetRatings())
 }
