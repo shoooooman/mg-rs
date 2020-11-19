@@ -44,7 +44,7 @@ func Run(id int) {
 	case "bdf_simple":
 		f = Bdf
 	default:
-		log.Fatal("Run: no such a manager")
+		log.Fatal("Run: no such a scenario")
 	}
 
 	for i := 0; i < k; i++ {
