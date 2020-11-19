@@ -79,7 +79,7 @@ func (m *Brs) CombineFeedback() {
 	}
 	tgt := fb.TargetID
 	bp := fb.Bp
-	log.Printf("reputation from %d on %d: %v\n", src, tgt, *bp)
+	log.Printf("%d: reputation from %d on %d: %v\n", m.id, src, tgt, *bp)
 	if tgt != m.id {
 		den := (m.params[src].S+2.0)*(bp.R+bp.S+2.0) + 2.0*m.params[src].R
 		m.params[tgt].R += 2.0 * m.params[src].R * bp.R / den
