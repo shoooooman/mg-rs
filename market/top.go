@@ -7,18 +7,18 @@ type TopGateway struct{}
 
 // GetTxReq is ...
 func (sm *TopGateway) GetTxReq(ratings map[int]float64) common.TxReq {
-	max := -1.0
-	maxID := -1
+	min := 1.1
+	minID := -1
 	for id, rating := range ratings {
-		if rating > max {
-			max = rating
-			maxID = id
+		if rating < min {
+			min = rating
+			minID = id
 		}
 	}
 
 	req := common.TxReq{
 		ID:      reqID,
-		PartyID: maxID,
+		PartyID: minID,
 	}
 	reqID++
 	return req
