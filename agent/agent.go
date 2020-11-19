@@ -43,6 +43,8 @@ func (a *Agent) SetManager(rm string) error {
 		a.Manager = reputation.NewBrs(a.ID)
 	case "bdf":
 		a.Manager = reputation.NewBdf(a.ID)
+	case "bdfv":
+		a.Manager = reputation.NewBdfv(a.ID)
 	default:
 		return fmt.Errorf("no such a reputation manager")
 	}

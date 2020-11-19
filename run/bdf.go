@@ -53,7 +53,13 @@ func Bdf(a *agent.Agent, n int) {
 		}
 		rlog.Printf("[ratings] %d %d %v\n", a.ID, i, a.GetRatings())
 	}
-	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Bdf).GetParams())
+	// to use GetParams() for debugging
+	switch m := a.Manager.(type) {
+	case *reputation.Bdf:
+		log.Printf("%d: %v\n", a.ID, m.GetParams())
+	case *reputation.Bdfv:
+		log.Printf("%d: %v\n", a.ID, m.GetParams())
+	}
 	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
 	fmt.Println(a.ID, a.GetRatings())
