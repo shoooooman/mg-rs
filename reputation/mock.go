@@ -2,6 +2,7 @@ package reputation
 
 import (
 	"encoding/gob"
+	"fmt"
 	"log"
 
 	"github.com/shoooooman/mg-rs/common"
@@ -18,6 +19,11 @@ type MockManager struct {
 // Bparams is ...
 type Bparams struct {
 	A, B int
+}
+
+// String is for debugging
+func (bp *Bparams) String() string {
+	return fmt.Sprintf("(%v, %v)", bp.A, bp.B)
 }
 
 // Feedback is ...
