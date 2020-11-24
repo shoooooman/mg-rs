@@ -31,10 +31,12 @@ G = nx.fast_gnp_random_graph(n, p)
 # network setting
 host = "127.0.0.1"
 base_port = 10000
+master_port = 8080
 
 # convert to dict
 d = {}
-d["nodes"] = []
+master = {"id": -1, "address": host + ":" + str(master_port), "peers": []}
+d["nodes"] = [master]
 for i in range(n):
     addr = host + ":" + str(base_port + i)
     peers = list(G.adj[i])

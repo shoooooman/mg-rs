@@ -18,6 +18,8 @@ type Node struct {
 	Peers   []int  `mapstructure:"peers"`
 }
 
+const masterID = -1
+
 var (
 	v            = viper.New()
 	confFilename = "config"
@@ -71,9 +73,17 @@ func (c *config) getPeers(id int) []*Peer {
 }
 
 func (c *config) getIDs() []int {
-	ids := make([]int, len(c.Nodes))
-	for i, n := range c.Nodes {
-		ids[i] = n.ID
+	ids := make([]int, 0, len(c.Nodes)-1)
+	for _, n := range c.Nodes {
+		id := n.ID
+		if id == masterID {
+			continue
+		}
+		ids = append(ids, id)
 	}
 	return ids
+}
+
+func (c *config) getMasterAddr() string {
+	return c.NodeMap[masterID].Address
 }

@@ -2,6 +2,8 @@
 if [ $1 = "start" ]; then
     go build main.go
 
+    ./main master --tag=mg-rs &
+    sleep 1
     num=50
     for (( i=0; i < $num; i++ )); do
         ./main $i --tag=mg-rs &

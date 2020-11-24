@@ -6,11 +6,17 @@ import (
 
 	"github.com/shoooooman/mg-rs/agent"
 	"github.com/shoooooman/mg-rs/market"
+	"github.com/shoooooman/mg-rs/network"
 )
 
 var (
 	rlog = log.New(os.Stderr, "[ANALYSIS] ", log.LstdFlags)
 )
+
+// Master is ...
+func Master() {
+	network.RunMasterClient()
+}
 
 // Run is ...
 func Run(id int) {

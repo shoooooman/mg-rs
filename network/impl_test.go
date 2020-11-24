@@ -15,7 +15,7 @@ var (
 func TestMain(m *testing.M) {
 	c0 = &ClientImpl{}
 	c0.buf = make(chan *common.Message, bufsize)
-	c0.RPCServer = &RPCServer{c0.buf}
+	c0.RPCServer = &RPCServer{buf: c0.buf}
 	serverAddr := "127.0.0.1:10000"
 	c0.RunServer(serverAddr)
 

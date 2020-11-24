@@ -13,10 +13,15 @@ func main() {
 		log.Fatal("input length is too small")
 	}
 
-	id, err := strconv.Atoi(os.Args[1])
+	arg := os.Args[1]
+	if arg == "master" {
+		run.Master()
+		return
+	}
+
+	id, err := strconv.Atoi(arg)
 	if err != nil {
 		log.Fatal("id error")
 	}
-
 	run.Run(id)
 }

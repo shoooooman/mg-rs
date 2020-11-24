@@ -10,10 +10,13 @@ import (
 	"github.com/shoooooman/mg-rs/common"
 )
 
-const bufsize = 5
+const bufsize = 1000
+
+var done = make(chan []string)
 
 // ClientImpl is ...
 type ClientImpl struct {
+	id      int
 	nodeIDs []int
 	peers   []*Peer
 	buf     chan *common.Message
@@ -82,23 +85,77 @@ func (c *ClientImpl) GetIDs() []int {
 	return c.nodeIDs
 }
 
+// Register sends its address to the master for registration
+func (c *ClientImpl) Register(masterAddr, addr string) {
+	master, err := rpc.DialHTTP("tcp", masterAddr)
+	if err != nil {
+		log.Fatal("dialing:", err)
+	}
+
+	var reply string
+	msg := &common.Message{SenderID: c.id, Body: addr}
+	err = master.Call("RPCServer.Register", msg, &reply)
+	if err != nil {
+		log.Fatal("calling:", err)
+	}
+	log.Printf("%d: reply to registration: %v\n", c.id, reply)
+}
+
 // NewClientImpl is ...
 func NewClientImpl(id int) *ClientImpl {
-	client := &ClientImpl{}
+	client := &ClientImpl{id: id}
 	client.buf = make(chan *common.Message, bufsize)
-	client.RPCServer = &RPCServer{client.buf}
 
 	conf := readConfig()
-
 	client.nodeIDs = conf.getIDs()
+
+	client.RPCServer = &RPCServer{buf: client.buf}
 
 	addr := conf.getAddr(id)
 	client.RunServer(addr)
+	log.Printf("%d started serving\n", id)
 
-	time.Sleep(time.Second * 5)
-
+	client.Register(conf.getMasterAddr(), addr)
+	msg := client.GetData() // wait for receiving done message from the master
+	log.Printf("%d: msg right after registration: %v\n", id, msg)
+	if msg.SenderID != masterID {
+		log.Fatalf("%d: registration error", id)
+	}
+	log.Printf("%d: initialization is done\n", id)
 	peers := conf.getPeers(id)
 	client.ConnectPeers(peers)
 
+	time.Sleep(time.Second * 3)
+
 	return client
+}
+
+// RunMasterClient starts the master, which synchronizes agents before running experiment
+func RunMasterClient() {
+	client := &ClientImpl{id: masterID}
+
+	conf := readConfig()
+	client.nodeIDs = conf.getIDs()
+
+	client.RPCServer = &RPCServer{num: len(client.nodeIDs)}
+
+	addr := conf.getAddr(masterID)
+	client.RunServer(addr)
+	log.Printf("%d started serving\n", masterID)
+
+	addrs := <-done // wait for all nodes to finish registration
+	log.Println("master: all nodes are registered")
+	for _, addr := range addrs {
+		c, err := rpc.DialHTTP("tcp", addr)
+		if err != nil {
+			log.Fatal("dialing:", err)
+		}
+		msg := &common.Message{SenderID: masterID, Body: "done"}
+		var reply string
+		err = c.Call("RPCServer.Receive", msg, &reply)
+		if err != nil {
+			log.Fatal("calling:", err)
+		}
+		log.Printf("%d: reply to done msg: %v\n", masterID, reply)
+	}
 }
