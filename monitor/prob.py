@@ -27,17 +27,17 @@ if not (0 <= normal_ratio <= 1.0):
     sys.exit(1)
 
 if not isfloat(args[3]):
-    print('please input the ratio of malicious nodes', file=sys.stderr)
+    print('please input the ratio of failure nodes', file=sys.stderr)
     sys.exit(1)
-malicious_ratio = float(args[3])
-if not (0 <= malicious_ratio <= 1.0):
-    print('the ratio of malicious nodes must be between 0.0 and 1.0', file=sys.stderr)
+failure_ratio = float(args[3])
+if not (0 <= failure_ratio <= 1.0):
+    print('the ratio of failure nodes must be between 0.0 and 1.0', file=sys.stderr)
     sys.exit(1)
 
 if not isfloat(args[4]):
-    print('please input the ratio of failure nodes', file=sys.stderr)
+    print('please input the ratio of malicious nodes', file=sys.stderr)
     sys.exit(1)
-failure_ratio = float(args[4])
+malicious_ratio = float(args[4])
 if normal_ratio+malicious_ratio+failure_ratio != 1:
     print('the sum of three ratio should be 1', file=sys.stderr)
     sys.exit(1)
