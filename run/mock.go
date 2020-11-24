@@ -45,6 +45,7 @@ func Mock(a *agent.Agent, n int) {
 		for j := 0; j < len(peers); j++ {
 			a.CombineFeedback()
 		}
+		log.Printf("%d: %dth tx finished\n", a.ID, i)
 	}
 	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
