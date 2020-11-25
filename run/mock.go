@@ -19,10 +19,10 @@ func Mock(a *agent.Agent, n int) {
 	for i := 0; i < n; i++ {
 		req := a.GetTxReq(a.GetRatings())
 		party := req.PartyID
-		log.Printf("req: %d with %d\n", a.ID, party)
 
 		tx := common.Tx{ID: req.ID, Time: i, PartyID: party}
 		behavior := a.MonitorTx(tx)
+		log.Printf("%d with %d: %v\n", a.ID, party, behavior)
 
 		var result float64
 		if behavior {
