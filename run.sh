@@ -8,6 +8,7 @@ if [ $1 = "start" ]; then
     for (( i=0; i < $num; i++ )); do
         ./main $i --tag=mg-rs &
     done
+    sleep 1
     rm ./main
 elif [ $1 = "kill" ]; then
     pgrep -f mg-rs | xargs kill
