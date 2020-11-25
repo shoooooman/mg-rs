@@ -47,10 +47,10 @@ num_malicious = int(malicious_ratio*n)
 num_failure = n - num_normal - num_malicious
 print(num_normal, num_failure, num_malicious)
 
-# first-half: 0.05, second-half: 0.95
+# first-half: 0.05, second-half: 1.0
 def get_var_probs(num_tx):
     first = {"left": 0, "right": num_tx//2, "value": 0.05}
-    second = {"left": num_tx//2, "right": num_tx, "value": 0.95}
+    second = {"left": num_tx//2, "right": num_tx, "value": 1.0}
     return [first, second]
 
 num_tx = 1000
