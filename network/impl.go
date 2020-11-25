@@ -109,7 +109,7 @@ func NewClientImpl(id int) *ClientImpl {
 	conf := readConfig()
 	client.nodeIDs = conf.getIDs()
 
-	client.RPCServer = &RPCServer{buf: client.buf}
+	client.RPCServer = &RPCServer{buf: &client.buf}
 
 	addr := conf.getAddr(id)
 	client.RunServer(addr)
