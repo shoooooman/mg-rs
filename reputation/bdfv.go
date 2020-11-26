@@ -15,18 +15,19 @@ type Bdfv struct {
 func (m *Bdfv) CombineFeedback() {
 	msg := m.GetData()
 	src := msg.SenderID
-	fb, ok := msg.Body.(BdfFB)
+	body, ok := msg.Body.(BdfBody)
 	if !ok {
 		log.Fatal("body type is error")
 	}
-	tgt := fb.TargetID
-	bp := fb.Bp
-	log.Printf("reputation from %d on %d: %v\n", src, tgt, *bp)
+	tgt := body.TargetID
+	pr := body.Params
+	fb := body.Fb
+	log.Printf("reputation from %d on %d: %v\n", src, tgt, *fb)
 
 	if tgt == m.id {
 		return
 	}
-	deviate := bdfDeviationTest(m.rparams[tgt], bp)
+	deviate := bdfDeviationTest(m.rparams[tgt], pr)
 	if deviate {
 		m.tparams[src].A++
 	} else {
@@ -34,17 +35,17 @@ func (m *Bdfv) CombineFeedback() {
 	}
 	trust := bdfCalcExp(m.tparams[src])
 	if trust < bdfT || !deviate {
-		m.rparams[tgt].A += trust * bp.A // variable weight
-		m.rparams[tgt].B += trust * bp.B // variable weight
+		m.rparams[tgt].A = m.decay*m.rparams[tgt].A + trust*fb.A // variable weight
+		m.rparams[tgt].B = m.decay*m.rparams[tgt].B + trust*fb.B // variable weight
 		m.ratings[tgt] = bdfCalcExp(m.rparams[tgt])
 	}
 }
 
 // NewBdfv is ...
-func NewBdfv(id int) *Bdfv {
-	gob.Register(BdfFB{})
+func NewBdfv(id int, decay float64) *Bdfv {
+	gob.Register(BdfBody{})
 	bdfv := &Bdfv{
-		Bdf: NewBdf(id),
+		Bdf: NewBdf(id, decay),
 	}
 	bdfv.InitRatings()
 	return bdfv

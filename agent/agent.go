@@ -1,8 +1,6 @@
 package agent
 
 import (
-	"fmt"
-
 	"github.com/shoooooman/mg-rs/common"
 	"github.com/shoooooman/mg-rs/market"
 	"github.com/shoooooman/mg-rs/monitor"
@@ -17,38 +15,6 @@ type Agent struct {
 	reputation.Manager
 	TxReqs    map[int]common.TxReq
 	TxHistory map[int]common.Tx
-}
-
-// SetGateway is ...
-func (a *Agent) SetGateway(gw string) error {
-	switch gw {
-	case "random":
-		a.Gateway = &market.RandomGateway{}
-	case "top":
-		a.Gateway = &market.TopGateway{}
-	case "toprand":
-		a.Gateway = &market.TopRandGateway{}
-	default:
-		return fmt.Errorf("no such a gateway")
-	}
-	return nil
-}
-
-// SetManager is ...
-func (a *Agent) SetManager(rm string) error {
-	switch rm {
-	case "mock":
-		a.Manager = reputation.NewMockManager(a.ID)
-	case "brs":
-		a.Manager = reputation.NewBrs(a.ID)
-	case "bdf":
-		a.Manager = reputation.NewBdf(a.ID)
-	case "bdfv":
-		a.Manager = reputation.NewBdfv(a.ID)
-	default:
-		return fmt.Errorf("no such a reputation manager")
-	}
-	return nil
 }
 
 // NewAgent is ...

@@ -13,6 +13,7 @@ import (
 // Brs represents the Beta Reputation System manager
 type Brs struct {
 	id      int
+	decay   float64
 	params  map[int]*BrsBP
 	ratings map[int]float64
 	network.Client
@@ -57,9 +58,9 @@ func (m *Brs) GetRatings() map[int]float64 {
 // UpdateRating is ...
 func (m *Brs) UpdateRating(id int, result float64) {
 	if result >= 0 {
-		m.params[id].S += result // success
+		m.params[id].S = m.decay*m.params[id].S + result // success
 	} else {
-		m.params[id].R += math.Abs(result) // failure
+		m.params[id].R = m.decay*m.params[id].R + math.Abs(result) // failure
 	}
 	m.ratings[id] = brsCalcExp(m.params[id])
 }
@@ -82,8 +83,8 @@ func (m *Brs) CombineFeedback() {
 	log.Printf("%d: reputation from %d on %d: %v\n", m.id, src, tgt, *bp)
 	if tgt != m.id {
 		den := (m.params[src].S+2.0)*(bp.R+bp.S+2.0) + 2.0*m.params[src].R
-		m.params[tgt].R += 2.0 * m.params[src].R * bp.R / den
-		m.params[tgt].S += 2.0 * m.params[src].R * bp.S / den
+		m.params[tgt].R = m.decay*m.params[tgt].R + 2.0*m.params[src].R*bp.R/den
+		m.params[tgt].S = m.decay*m.params[tgt].S + 2.0*m.params[src].R*bp.S/den
 		m.ratings[tgt] = brsCalcExp(m.params[tgt])
 	}
 }
@@ -94,10 +95,11 @@ func (m *Brs) GetParams() map[int]*BrsBP {
 }
 
 // NewBrs is ...
-func NewBrs(id int) *Brs {
+func NewBrs(id int, decay float64) *Brs {
 	gob.Register(BrsFB{})
 	brs := &Brs{
 		id:     id,
+		decay:  decay,
 		Client: network.NewClientImpl(id),
 	}
 	brs.InitRatings()

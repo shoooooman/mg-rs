@@ -8,7 +8,7 @@ import (
 
 type config struct {
 	Gateway  gatewayConfig  `mapstructure:"gateway"`
-	Manager  string         `mapstructure:"reputation_manager"`
+	Manager  managerConfig  `mapstructure:"reputation_manager"`
 	Scenario scenarioConfig `mapstructure:"scenario"`
 	K        int            `mapstructure:"run_num"`
 }
@@ -18,15 +18,27 @@ type gatewayConfig struct {
 	Prob float64 `mapstructure:"random_prob"`
 }
 
+type managerConfig struct {
+	Name  string  `mapstructure:"name"`
+	Decay float64 `mapstructure:"decay_factor"`
+}
+
 type scenarioConfig struct {
 	Name string `mapstructure:"name"`
 	N    int    `mapstructure:"tx_num"`
 }
 
-var v = viper.New()
+var (
+	v            = viper.New()
+	confFilename = "config"
+)
+
+const (
+	decayDefault = 1.0
+)
 
 func readConfig() *config {
-	v.SetConfigName("config")
+	v.SetConfigName(confFilename)
 	v.SetConfigType("json")
 	v.AddConfigPath("./run")
 	err := v.ReadInConfig()
@@ -34,6 +46,7 @@ func readConfig() *config {
 		log.Fatal("config file error:", err)
 	}
 	var c config
+	c.Manager.Decay = decayDefault
 	err = v.Unmarshal(&c)
 	if err != nil {
 		log.Fatal("config unmarshal error:", err)

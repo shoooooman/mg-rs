@@ -34,17 +34,29 @@ func Bdf(a *agent.Agent, n int) {
 		log.Printf("result (%d with %d): %v\n", a.ID, party, result)
 		a.UpdateRating(party, result)
 
-		var bp *reputation.BdfPR
+		var params *reputation.BdfPR
+		switch m := a.Manager.(type) {
+		case *reputation.Bdf:
+			params = m.GetParams()[party]
+		case *reputation.Bdfv:
+			params = m.GetParams()[party]
+		default:
+			log.Fatal("GetParams can be called only with bdf or bdfv")
+		}
+
+		var fb *reputation.BdfPR
 		if behavior {
-			bp = &reputation.BdfPR{A: 0.0, B: 1.0}
+			fb = &reputation.BdfPR{A: 0.0, B: 1.0}
 		} else {
-			bp = &reputation.BdfPR{A: 1.0, B: 0.0}
+			fb = &reputation.BdfPR{A: 1.0, B: 0.0}
 		}
-		fb := &reputation.BdfFB{
+
+		body := &reputation.BdfBody{
 			TargetID: party,
-			Bp:       bp,
+			Params:   params,
+			Fb:       fb,
 		}
-		msg := &common.Message{SenderID: a.ID, Body: fb}
+		msg := &common.Message{SenderID: a.ID, Body: body}
 		a.BroadcastMessage(msg)
 
 		peers := a.GetPeers()

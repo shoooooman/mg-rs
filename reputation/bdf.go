@@ -19,6 +19,7 @@ const (
 // Bdf is ...
 type Bdf struct {
 	id      int
+	decay   float64
 	rparams map[int]*BdfPR
 	tparams map[int]*BdfPR
 	ratings map[int]float64
@@ -35,10 +36,11 @@ func (pr *BdfPR) String() string {
 	return fmt.Sprintf("(%v, %v)", pr.A, pr.B)
 }
 
-// BdfFB is ...
-type BdfFB struct {
+// BdfBody is ...
+type BdfBody struct {
 	TargetID int
-	Bp       *BdfPR
+	Params   *BdfPR // The params of the target owned by the sender (for deviation test)
+	Fb       *BdfPR // The feedback from the sender on the target (second-hand info)
 }
 
 // InitRatings is ...
@@ -67,9 +69,9 @@ func (m *Bdf) GetRatings() map[int]float64 {
 // UpdateRating is ...
 func (m *Bdf) UpdateRating(id int, result float64) {
 	if result >= 0 {
-		m.rparams[id].B += result // success
+		m.rparams[id].B = m.decay*m.rparams[id].B + result // success
 	} else {
-		m.rparams[id].A += math.Abs(result) // failure
+		m.rparams[id].A = m.decay*m.rparams[id].A + math.Abs(result) // failure
 	}
 	m.ratings[id] = bdfCalcExp(m.rparams[id])
 }
@@ -83,40 +85,42 @@ func (m *Bdf) BroadcastMessage(msg *common.Message) {
 func (m *Bdf) CombineFeedback() {
 	msg := m.GetData()
 	src := msg.SenderID
-	fb, ok := msg.Body.(BdfFB)
+	body, ok := msg.Body.(BdfBody)
 	if !ok {
 		log.Fatal("body type is error")
 	}
-	tgt := fb.TargetID
-	bp := fb.Bp
-	log.Printf("reputation from %d on %d: %v\n", src, tgt, *bp)
+	tgt := body.TargetID
+	pr := body.Params
+	fb := body.Fb
+	log.Printf("reputation from %d on %d: %v\n", src, tgt, *fb)
 
 	if tgt == m.id {
 		return
 	}
-	deviate := bdfDeviationTest(m.rparams[tgt], bp)
+	deviate := bdfDeviationTest(m.rparams[tgt], pr)
 	if deviate {
 		m.tparams[src].A++
 	} else {
 		m.tparams[src].B++
 	}
 	if bdfCalcExp(m.tparams[src]) < bdfT || !deviate {
-		m.rparams[tgt].A += bdfW * bp.A
-		m.rparams[tgt].B += bdfW * bp.B
+		m.rparams[tgt].A = m.decay*m.rparams[tgt].A + bdfW*fb.A
+		m.rparams[tgt].B = m.decay*m.rparams[tgt].B + bdfW*fb.B
 		m.ratings[tgt] = bdfCalcExp(m.rparams[tgt])
 	}
 }
 
-// GetParams is for debugging
+// GetParams returns the set of parameters
 func (m *Bdf) GetParams() map[int]*BdfPR {
 	return m.rparams
 }
 
 // NewBdf is ...
-func NewBdf(id int) *Bdf {
-	gob.Register(BdfFB{})
+func NewBdf(id int, decay float64) *Bdf {
+	gob.Register(BdfBody{})
 	bdf := &Bdf{
 		id:     id,
+		decay:  decay,
 		Client: network.NewClientImpl(id),
 	}
 	bdf.InitRatings()

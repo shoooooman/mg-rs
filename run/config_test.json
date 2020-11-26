@@ -1,0 +1,15 @@
+{
+    "gateway": {
+        "name": "toprand",
+        "random_prob": 0.1
+    },
+    "reputation_manager": {
+        "name": "brs",
+        "decay_factor": 0.999
+    },
+    "scenario": {
+        "name": "brs_simple",
+        "tx_num": 1000
+    },
+    "run_num": 5
+}

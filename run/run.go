@@ -7,6 +7,7 @@ import (
 	"github.com/shoooooman/mg-rs/agent"
 	"github.com/shoooooman/mg-rs/market"
 	"github.com/shoooooman/mg-rs/network"
+	"github.com/shoooooman/mg-rs/reputation"
 )
 
 var (
@@ -23,22 +24,38 @@ func Run(id int) {
 	conf := readConfig()
 	var (
 		gateway  = conf.Gateway.Name
-		manager  = conf.Manager
+		manager  = conf.Manager.Name
+		decay    = conf.Manager.Decay
 		scenario = conf.Scenario.Name
 		n        = conf.Scenario.N
 		k        = conf.K
 	)
 
 	a := agent.NewAgent(id)
-	if err := a.SetGateway(gateway); err != nil {
-		log.Fatal("SetGateway:", err)
-	}
-	if gw, ok := a.Gateway.(*market.TopRandGateway); ok {
-		gw.SetRandProb(conf.Gateway.Prob)
+
+	switch gateway {
+	case "random":
+		a.Gateway = &market.RandomGateway{}
+	case "top":
+		a.Gateway = &market.TopGateway{}
+	case "toprand":
+		a.Gateway = &market.TopRandGateway{}
+		a.Gateway.(*market.TopRandGateway).SetRandProb(conf.Gateway.Prob)
+	default:
+		log.Fatal("no such a gateway")
 	}
 
-	if err := a.SetManager(manager); err != nil {
-		log.Fatal("SetManager:", err)
+	switch manager {
+	case "mock":
+		a.Manager = reputation.NewMockManager(a.ID)
+	case "brs":
+		a.Manager = reputation.NewBrs(a.ID, decay)
+	case "bdf":
+		a.Manager = reputation.NewBdf(a.ID, decay)
+	case "bdfv":
+		a.Manager = reputation.NewBdfv(a.ID, decay)
+	default:
+		log.Fatal("no such a reputation manager")
 	}
 
 	var f func(*agent.Agent, int)
