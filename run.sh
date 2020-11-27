@@ -10,6 +10,7 @@ if [ $1 = "start" ]; then
     done
     sleep 1
     rm ./main
+    wait
 elif [ $1 = "kill" ]; then
     pgrep -f mg-rs | xargs kill
 else
