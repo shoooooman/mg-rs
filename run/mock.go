@@ -1,7 +1,6 @@
 package run
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/shoooooman/mg-rs/agent"
@@ -49,5 +48,4 @@ func Mock(a *agent.Agent, n int) {
 	}
 	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
-	fmt.Println(a.ID, a.GetRatings())
 }

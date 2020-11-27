@@ -1,7 +1,6 @@
 package run
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/shoooooman/mg-rs/agent"
@@ -56,5 +55,4 @@ func Brs(a *agent.Agent, n int) {
 	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Brs).GetParams())
 	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
-	fmt.Println(a.ID, a.GetRatings())
 }
