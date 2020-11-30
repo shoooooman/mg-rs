@@ -13,6 +13,7 @@ import (
 // Brs represents the Beta Reputation System manager
 type Brs struct {
 	id      int
+	rtype   RType
 	decay   float64
 	params  map[int]*BrsBP
 	ratings map[int]float64
@@ -67,7 +68,15 @@ func (m *Brs) UpdateRating(id int, result float64) {
 
 // BroadcastMessage is ...
 func (m *Brs) BroadcastMessage(msg *common.Message) {
-	m.Broadcast(msg)
+	switch m.rtype {
+	case honest:
+		m.Broadcast(msg)
+	case reverse:
+		fb := msg.Body.(*BrsFB)
+		fb.Bp.R, fb.Bp.S = fb.Bp.S, fb.Bp.R // reverse params
+		msg.Body = fb
+		m.Broadcast(msg)
+	}
 }
 
 // CombineFeedback is ...
@@ -97,8 +106,10 @@ func (m *Brs) GetParams() map[int]*BrsBP {
 // NewBrs is ...
 func NewBrs(id int, decay float64) *Brs {
 	gob.Register(BrsFB{})
+	conf := readConfig()
 	brs := &Brs{
 		id:     id,
+		rtype:  conf.getReportType(id),
 		decay:  decay,
 		Client: network.NewClientImpl(id),
 	}

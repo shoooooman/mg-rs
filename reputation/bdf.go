@@ -19,6 +19,7 @@ const (
 // Bdf is ...
 type Bdf struct {
 	id      int
+	rtype   RType
 	decay   float64
 	rparams map[int]*BdfPR
 	tparams map[int]*BdfPR
@@ -78,7 +79,15 @@ func (m *Bdf) UpdateRating(id int, result float64) {
 
 // BroadcastMessage is ...
 func (m *Bdf) BroadcastMessage(msg *common.Message) {
-	m.Broadcast(msg)
+	switch m.rtype {
+	case honest:
+		m.Broadcast(msg)
+	case reverse:
+		body := msg.Body.(*BdfBody)
+		body.Fb.A, body.Fb.B = body.Fb.B, body.Fb.A
+		msg.Body = body
+		m.Broadcast(msg)
+	}
 }
 
 // CombineFeedback is ...
@@ -118,8 +127,10 @@ func (m *Bdf) GetParams() map[int]*BdfPR {
 // NewBdf is ...
 func NewBdf(id int, decay float64) *Bdf {
 	gob.Register(BdfBody{})
+	conf := readConfig()
 	bdf := &Bdf{
 		id:     id,
+		rtype:  conf.getReportType(id),
 		decay:  decay,
 		Client: network.NewClientImpl(id),
 	}

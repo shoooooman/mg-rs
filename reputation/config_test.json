@@ -1,0 +1,12 @@
+{
+    "types": [
+        {
+            "id": 0,
+            "type": "honest"
+        },
+        {
+            "id": 1,
+            "type": "reverse"
+        }
+    ]
+}
