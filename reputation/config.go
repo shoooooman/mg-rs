@@ -20,7 +20,6 @@ type ReportType struct {
 
 var (
 	v            = viper.New()
-	reader       = readConfig
 	confFilename = "config"
 )
 
