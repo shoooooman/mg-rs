@@ -12,7 +12,7 @@ if [ $1 = "start" ]; then
     rm ./main
     wait
 elif [ $1 = "kill" ]; then
-    pgrep -f mg-rs | xargs kill
+    pgrep -f tag=mg-rs | xargs kill
 else
     echo please input valid command
 fi
