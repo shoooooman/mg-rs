@@ -3,7 +3,7 @@
 ## Docker
 For a set of scenarios in `run/configs.json`,
 ```sh
-docker-compose run -e FILES={foo bar} app
+docker-compose run -e FILES="foo bar" app
 ```
 
 ## Shell
