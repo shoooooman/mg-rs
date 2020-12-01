@@ -33,10 +33,10 @@ func (m *Bdfv) CombineFeedback() {
 	} else {
 		m.tparams[src].B++
 	}
-	trust := bdfCalcExp(m.tparams[src])
-	if trust < bdfT || !deviate {
-		m.rparams[tgt].A = m.decay*m.rparams[tgt].A + trust*fb.A // variable weight
-		m.rparams[tgt].B = m.decay*m.rparams[tgt].B + trust*fb.B // variable weight
+	untrust := bdfCalcExp(m.tparams[src])
+	if untrust < bdfT || !deviate {
+		m.rparams[tgt].A = m.decay*m.rparams[tgt].A + (1.0-untrust)*fb.A // variable weight
+		m.rparams[tgt].B = m.decay*m.rparams[tgt].B + (1.0-untrust)*fb.B // variable weight
 		m.ratings[tgt] = bdfCalcExp(m.rparams[tgt])
 	}
 }
