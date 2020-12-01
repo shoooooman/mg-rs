@@ -84,6 +84,7 @@ func (m *Bdf) BroadcastMessage(msg *common.Message) {
 		m.Broadcast(msg)
 	case reverse:
 		body := msg.Body.(*BdfBody)
+		body.Params.A, body.Params.B = body.Params.B, body.Params.A
 		body.Fb.A, body.Fb.B = body.Fb.B, body.Fb.A
 		msg.Body = body
 		m.Broadcast(msg)
