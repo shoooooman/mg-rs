@@ -10,7 +10,7 @@ def isfloat(s):
 
 args = sys.argv
 if len(args) != 5:
-    print('the length of args is too small', file=sys.stderr)
+    print('the length of args must be 5', file=sys.stderr)
     sys.exit(1)
 
 if not args[1].isdecimal():
