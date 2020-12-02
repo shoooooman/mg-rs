@@ -12,6 +12,7 @@ import (
 
 const (
 	bvfT = 0.25
+	bvfW = 0.1
 )
 
 // Bvf is Beta Verification Feedback
@@ -129,10 +130,9 @@ func (m *Bvf) CombineFeedback() {
 
 	m.feedbacks[tgt][src] = bvfCalcExp(pr)
 
-	untrust := bvfCalcExp(m.tparams[src])
-	if untrust < bvfT {
-		m.rparams[tgt].A = m.decay*m.rparams[tgt].A + (1.0-untrust)*fb.A
-		m.rparams[tgt].B = m.decay*m.rparams[tgt].B + (1.0-untrust)*fb.B
+	if bvfCalcExp(m.tparams[src]) < bvfT {
+		m.rparams[tgt].A = m.decay*m.rparams[tgt].A + bvfW*fb.A
+		m.rparams[tgt].B = m.decay*m.rparams[tgt].B + bvfW*fb.B
 		m.ratings[tgt] = bvfCalcExp(m.rparams[tgt])
 	}
 }

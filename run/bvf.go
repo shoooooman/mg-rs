@@ -33,7 +33,15 @@ func Bvf(a *agent.Agent, n int) {
 		log.Printf("result (%d with %d): %v\n", a.ID, party, result)
 		a.UpdateRating(party, result)
 
-		params := a.Manager.(*reputation.Bvf).GetParams()[party]
+		var params *reputation.BvfPR
+		switch m := a.Manager.(type) {
+		case *reputation.Bvf:
+			params = m.GetParams()[party]
+		case *reputation.Bvfv:
+			params = m.GetParams()[party]
+		default:
+			log.Fatal("GetParams can be called only with bvf or bvfv")
+		}
 
 		var fb *reputation.BvfPR
 		if behavior {
@@ -56,9 +64,17 @@ func Bvf(a *agent.Agent, n int) {
 		}
 		rlog.Printf("[ratings] %d %d %v\n", a.ID, i, a.GetRatings())
 	}
-	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Bvf).GetParams())
-	log.Printf("%d's tparams: %v\n", a.ID, a.Manager.(*reputation.Bvf).GetTParams())
-	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Bvf).GetFeedbacks())
+	// for debugging
+	switch m := a.Manager.(type) {
+	case *reputation.Bvf:
+		log.Printf("%d: %v\n", a.ID, m.GetParams())
+		log.Printf("%d's tparams: %v\n", a.ID, m.GetTParams())
+		log.Printf("%d: %v\n", a.ID, m.GetFeedbacks())
+	case *reputation.Bvfv:
+		log.Printf("%d: %v\n", a.ID, m.GetParams())
+		log.Printf("%d's tparams: %v\n", a.ID, m.GetTParams())
+		log.Printf("%d: %v\n", a.ID, m.GetFeedbacks())
+	}
 	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)
 }

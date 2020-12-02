@@ -56,6 +56,8 @@ func Run(id int) {
 		a.Manager = reputation.NewBdfv(a.ID, decay)
 	case "bvf":
 		a.Manager = reputation.NewBvf(a.ID, decay)
+	case "bvfv":
+		a.Manager = reputation.NewBvfv(a.ID, decay)
 	default:
 		log.Fatal("no such a reputation manager")
 	}
