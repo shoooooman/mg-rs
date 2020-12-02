@@ -1,7 +1,6 @@
 package reputation
 
 import (
-	"encoding/gob"
 	"log"
 )
 
@@ -43,10 +42,8 @@ func (m *Bdfv) CombineFeedback() {
 
 // NewBdfv is ...
 func NewBdfv(id int, decay float64) *Bdfv {
-	gob.Register(BdfBody{})
 	bdfv := &Bdfv{
 		Bdf: NewBdf(id, decay),
 	}
-	bdfv.InitRatings()
 	return bdfv
 }
