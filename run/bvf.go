@@ -57,6 +57,7 @@ func Bvf(a *agent.Agent, n int) {
 		rlog.Printf("[ratings] %d %d %v\n", a.ID, i, a.GetRatings())
 	}
 	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Bvf).GetParams())
+	log.Printf("%d's tparams: %v\n", a.ID, a.Manager.(*reputation.Bvf).GetTParams())
 	log.Printf("%d: %v\n", a.ID, a.Manager.(*reputation.Bvf).GetFeedbacks())
 	log.Printf("%d: (success, failure)=(%d, %d)\n", a.ID, success, failure)
 	rlog.Printf("[result] %d %d %d\n", a.ID, success, failure)

@@ -81,13 +81,13 @@ func (m *Bvf) UpdateRating(id int, result float64) {
 	fbs := m.feedbacks[id]
 	for src, fb := range fbs {
 		if result >= 0 { // success
-			if fb >= 0.5 {
+			if fb <= 0.5 {
 				m.tparams[src].B++ // correct
 			} else {
 				m.tparams[src].A++ // incorrect
 			}
 		} else { // failure
-			if fb < 0.5 {
+			if fb > 0.5 {
 				m.tparams[src].B++ // correct
 			} else {
 				m.tparams[src].A++ // incorrect
@@ -140,6 +140,11 @@ func (m *Bvf) CombineFeedback() {
 // GetParams returns the set of parameters
 func (m *Bvf) GetParams() map[int]*BvfPR {
 	return m.rparams
+}
+
+// GetTParams returns the set of parameters
+func (m *Bvf) GetTParams() map[int]*BvfPR {
+	return m.tparams
 }
 
 // GetFeedbacks is for debugging
