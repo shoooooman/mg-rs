@@ -54,6 +54,8 @@ func Run(id int) {
 		a.Manager = reputation.NewBdf(a.ID, decay)
 	case "bdfv":
 		a.Manager = reputation.NewBdfv(a.ID, decay)
+	case "bvf":
+		a.Manager = reputation.NewBvf(a.ID, decay)
 	default:
 		log.Fatal("no such a reputation manager")
 	}
@@ -66,6 +68,8 @@ func Run(id int) {
 		f = Brs
 	case "bdf_simple":
 		f = Bdf
+	case "bvf_simple":
+		f = Bvf
 	default:
 		log.Fatal("Run: no such a scenario")
 	}
