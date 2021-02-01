@@ -5,8 +5,8 @@ This repository contains a simulator for distributed reputation algorithms.
 You can implement any reputation algorithms which satisfy the interface.
 
 Some existing algorithms are implemented by default:
-- The Beta Reputation System (BRS)
-- Beta Deviation Feedback (BDF)
+- [The Beta Reputation System](https://domino.fov.uni-mb.si/proceedings.nsf/proceedings/d9e48b66f32a7dffc1256e9f00355b37/$file/josang.pdf) (BRS)
+- [Beta Deviation Feedback](https://infoscience.epfl.ch/record/486) (BDF)
 
 Additionally, new reputation algorithms are implemented.
 - Beta Verification Feedback (BVF)
