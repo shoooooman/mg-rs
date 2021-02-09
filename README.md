@@ -40,7 +40,7 @@ type Algorithm interface {
 # Config
 There are three types of configurations.
 
-## Experiment Config
+## Experimental Config
 You can set the configuration of an experiment in `run/config.json` (for a single running) or `run/configs.json` (for multiple runnings).
 
 An example:
@@ -165,8 +165,34 @@ An example:
 ```
 
 There are two kinds of the parameter:
-- `fixed`:~the probability is constant
-- `variable`:~the probability varies according to time (`left` and `right` mean the start and end of an interval)
+- `fixed`: the probability is constant
+- `variable`: the probability varies according to time (`left` and `right` mean the start and end of an interval)
+
+## Report Config
+
+You can set the configuration of agents' report types in `reputation/config.json`.
+
+An example:
+
+```json
+{
+    "types": [
+        {
+            "id": 0,
+            "type": "honest"
+        },
+        {
+            "id": 1,
+            "type": "reverse"
+        }
+    ]
+}
+```
+
+There are two types by default:
+
+- `honest`: tell observed information honestly (no manipulation)
+- `reverse`: tell reversed infomation (reverse alpha and beta in the beta-family reputation algorithms)
 
 
 # Run
