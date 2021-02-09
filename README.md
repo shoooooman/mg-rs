@@ -86,9 +86,9 @@ You must add a branch in `run/run.go` if you add a new algorithm.
 `scenario` represents the experimental setting which is defined in `run`.
 This determines how you will run a reputation algorithm during the experiment.
 There are three options by default.
-- `brs_simple`: For BRS
-- `bdf_simple`: For BDF and BDF+vw
-- `bvf_simple`: For BVF and BVF+vw
+- `brs_simple`: for BRS
+- `bdf_simple`: for BDF and BDF+vw
+- `bvf_simple`: for BVF and BVF+vw
 
 `run_num` means the number of running.
 
